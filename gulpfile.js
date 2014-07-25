@@ -1,61 +1,83 @@
 var gulp = require('gulp'),
-    clean = require('gulp-clean'),
-    stylus = require('gulp-stylus'),
-    nib = require('nib'),
-    realStylus = require('gulp-stylus/node_modules/stylus'),
-    prefix = require('gulp-autoprefixer'),
-	connect = require('gulp-connect'),
-	launch = require('open');
+    rimraf = require('rimraf');
 
 
 require('gulp-grunt')(gulp);
 
 gulp.task('markup-clean', function() {
-    gulp.src('app/*.html')
-        .pipe(clean());
+	rimraf.sync('app/index.html');
+	rimraf.sync('app/inner.html');
 });
 
 gulp.task('markup-build', ['markup-clean'], function() {
-    gulp.start('grunt-assemble', function() {
-		gulp.src('app/*.html')
-			.pipe(connect.reload());
-    });
+    return gulp.start('grunt-assemble');
 });
 
 gulp.task('styles-clean', function() {
-    gulp.src('./app/inc/css/*.css')
-        .pipe(clean({read: false}));
+	rimraf.sync('./app/inc/css');
 });
 
 gulp.task('styles-build', ['styles-clean'], function() {
-    gulp.src('./app/inc/styl/*.styl')
+	var stylus = require('gulp-stylus'),
+		nib = require('nib'),
+		prefix = require('gulp-autoprefixer');
+
+    return gulp.src('./app/inc/styl/*.styl')
         .pipe(stylus({
             'include css': true,
-            define: {
-                url: realStylus.resolver({ paths: [__dirname + '/app/inc/css'] })
-            },
             use: [nib()]
         }))
         .pipe(prefix('last 2 versions'))
-        .pipe(gulp.dest('app/inc/css'))
-        .pipe(connect.reload())
+        .pipe(gulp.dest('app/inc/css'));
+});
+
+
+gulp.task('lib-clean', function() {
+	rimraf.sync('./app/inc/js/lib.js');
+});
+
+gulp.task('lib-build', ['lib-clean'], function() {
+	var bowerFiles = require('main-bower-files'),
+		concat = require('gulp-concat-sourcemap');
+
+	return gulp.src(bowerFiles())
+		.pipe(concat('lib.js', {sourcesContent: true}))
+		.pipe(gulp.dest('./app/inc/js'))
+});
+
+gulp.task('scripts-clean', function() {
+	rimraf.sync('./app/inc/js/build.js');
+});
+
+gulp.task('scripts-build', ['scripts-clean'], function() {
+	var concat = require('gulp-concat-sourcemap');
+
+	return gulp.src(['./app/inc/js/src/**/*.js', './app/inc/js/initialize.js'])
+		.pipe(concat('build.js', {sourcesContent: true}))
+		.pipe(gulp.dest('./app/inc/js'))
 });
 
 gulp.task('build', ['markup-build', 'styles-build']);
 
 gulp.task('default', function() {
-	connect.server({
-		port: 3000,
-		livereload: true
+	var watch = require('gulp-watch'),
+		livereload = require('gulp-livereload');
+
+	livereload.listen();
+
+	watch({glob: "app/_markup/**/*"}, function() {
+		gulp.start('markup-build', livereload.changed);
 	});
 
-    gulp.watch('app/_markup/**/*').on('change', function() {
-        gulp.start('markup-build');
-    });
+	watch({glob: "app/**/*.styl"}, function() {
+		gulp.start('styles-build', livereload.changed);
+	});
 
-    gulp.watch('app/**/*.styl').on('change', function() {
-        gulp.start('styles-build');
-    });
+	watch({glob: "./lib/**/*"}, function() {
+		gulp.start('lib-build', livereload.changed);
+	});
 
-	launch('http://localhost:3000/app', 'Google Chrome');
+	watch({glob: "./app/inc/js/**/*"}, function() {
+		gulp.start('scripts-build', livereload.changed);
+	});
 });

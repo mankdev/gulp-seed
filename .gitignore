@@ -1,0 +1,6 @@
+node_modules
+lib
+app/*.html
+app/inc/js/*.js
+app/inc/js/*.map
+.idea
