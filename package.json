@@ -1,0 +1,32 @@
+{
+  "name": "bull",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mankdev/bull.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mankdev/bull/issues"
+  },
+  "homepage": "https://github.com/mankdev/bull",
+  "devDependencies": {
+    "gulp-clean": "~0.3.0",
+    "gulp-autoprefixer": "0.0.7",
+    "gulp-stylus": "~1.0.2",
+    "gulp": "~3.7.0",
+    "gulp-grunt": "~0.5.1",
+    "assemble": "~0.4.37",
+    "grunt": "~0.4.5",
+    "glob": "~4.0.2",
+    "nib": "~1.0.2",
+    "gulp-connect": "~2.0.5",
+    "open": "0.0.5"
+  }
+}
