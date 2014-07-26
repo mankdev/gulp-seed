@@ -1,0 +1,9 @@
+{
+    "generator-dx": {
+        "stylesRoot": "app/inc/styl",
+        "required": {
+            "folders": ["blocks", "looks"]
+        },
+        "VCS": "git"
+    }
+}
