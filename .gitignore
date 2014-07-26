@@ -3,4 +3,5 @@ lib
 app/*.html
 app/inc/js/*.js
 app/inc/js/*.map
+app/inc/css
 .idea

@@ -52,12 +52,12 @@ gulp.task('scripts-clean', function() {
 gulp.task('scripts-build', ['scripts-clean'], function() {
 	var concat = require('gulp-concat-sourcemap');
 
-	return gulp.src(['./app/inc/js/src/**/*.js', './app/inc/js/initialize.js'])
+	return gulp.src(['./app/inc/js/src/all/**/*.js', './app/inc/js/src/initialize.js'])
 		.pipe(concat('build.js', {sourcesContent: true}))
 		.pipe(gulp.dest('./app/inc/js'))
 });
 
-gulp.task('build', ['markup-build', 'styles-build']);
+gulp.task('build', ['markup-build', 'styles-build', 'lib-build', 'scripts-build']);
 
 gulp.task('default', function() {
 	var watch = require('gulp-watch'),
