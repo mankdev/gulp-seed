@@ -20,11 +20,17 @@ gulp.task('styles-clean', function() {
 gulp.task('styles-build', ['styles-clean'], function() {
 	var stylus = require('gulp-stylus'),
 		nib = require('nib'),
+		realStylus = require('gulp-stylus/node_modules/stylus'),
+
 		prefix = require('gulp-autoprefixer');
 
     return gulp.src('./app/inc/styl/*.styl')
         .pipe(stylus({
             'include css': true,
+			include: ['./app/inc/img'],
+			define: {
+				url: realStylus.resolver({ paths: [__dirname + '/app/inc/css'] })
+			},
             use: [nib()]
         }))
         .pipe(prefix('last 2 versions'))
